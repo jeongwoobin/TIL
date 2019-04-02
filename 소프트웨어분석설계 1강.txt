@@ -1,0 +1,6 @@
+# 1강
+
+* 정보시스템(IS-Information System)
+	-컴퓨터를 사용, 명령입력, 결과출력받는 시스템
+* SAD(System Analysis and Design)
+	-
