@@ -15,7 +15,7 @@ print(list1)
 ```
 
 * 리스트 원소는 인덱스로 접근가능
-```
+```python
 list2 = [ 'a', 'b', 'c', 'd', 'e' ]
 print(list2[0])
 >> a
@@ -31,7 +31,7 @@ print(list2[-6])
 만약 인덱스가 리스트의 크기보다 크거나 작은값이라면 오류!!!
 
 * 인덱스로 원소의 값 변경 가능
-```
+```python
 list3 = [ 1, 2, 3 ]
 list3[0] = 5
 print(list3)
@@ -39,7 +39,7 @@ print(list3)
 ```
 
 * 리스트에 새로운 원소 추가(3가지)
-```
+```python
 # append 메소드 사용
 list4 = [ 1, 2, 3, 4, 5 ]
 list4.append(6)
@@ -56,7 +56,7 @@ print(list6)
 ```
 
 * 리스트에 있는 원소 삭제(2가지)
-```
+```python
 # del 이용
 list7 = [ 1, 2, 3, 4, 5 ]
 del list7[2]
@@ -72,7 +72,7 @@ print(list7)
 		* 만약 해당 원소의 갯수가 여러개라면 가장 처음 나온 원소 삭제
 
 * 리스트에 원소가 있는지 확인
-```
+```python
 list8 = [ 1, 2, 3, 4, 5 ]
 n = 3
 exist = n in list8
