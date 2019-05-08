@@ -103,7 +103,7 @@ tags: Python 스터디 반복문 for while
 		for i in rnage(10):
 			if i % 2 == 0:
 				print(i)
-			print(i)
+				print(i)
 		>> 1
 		1
 		3
