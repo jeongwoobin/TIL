@@ -5,7 +5,7 @@
 	: 실수
 * stirng
 	: 문자열<br/>
-```<br/>
+```python
 a = 3
 b = 3.0
 c = '3'
@@ -14,7 +14,7 @@ c = '3'
 * 형변환
 	: 말 그대로 의도적으로 자료형을 변경시키는것<br/>
 
-```
+```python
 a = 3
 b = 3.0
 print('a의 값은 {}이고 b의 값은 {}입니다.'.format(a, b))
@@ -24,7 +24,7 @@ print('a의 값은 {}이고 b의 값은 {}입니다.'.format(a, int(b)))
 
 ### Input
 사용자가 값을 변수에 넣고 싶을 때 사용<br/>
-```
+```python
 user = input('넣고싶은 수>> ')
 print(user)
 ```
@@ -36,7 +36,7 @@ print(user)
 * if문<br/>
 	조건문은 조건이 참일 때 그 블럭을 실행
 	거짓이라면 건너뛰어 else문을 실행<br/>
-	```
+	```python
 	# 예제) 돈이 만원이상 있으면 택시를 타고 없으면 걸어가라
 	money = 5000
 	if money >= 10000:
@@ -49,7 +49,7 @@ print(user)
 
 ### 조건식
 * 대소비교<br/>
-	```
+	```python
 	com = 3
 	user = 5
 
@@ -100,7 +100,7 @@ print(user)
 	<br/><br/>
 ### 블럭
 
-```
+```python
 if True:			  # 1. 여기서부터
     print('블럭1')
     if True:			  # 1-. 여기서부터
@@ -129,7 +129,7 @@ else:
 
 ### elif
 
-```
+```python
 apple = 3
 banana = 5
 
@@ -148,7 +148,7 @@ if문이 거짓일 때 elif문 조건식을 검사
 ### pass
 조건문이 참, 거짓일 때 아무것도 안하고 싶다면<br/>
 
-```
+```python
 print('조건문 시작')
 
 if True:
@@ -169,7 +169,7 @@ print('조건문 끝')
 형식은
 : 조건문이_참인_경우 if 조건문 else 조건문이_거짓인_경우<br/>
 
-```
+```python
 user = 5
 >> user = 10 if True else user = 0
 >> print(user)
