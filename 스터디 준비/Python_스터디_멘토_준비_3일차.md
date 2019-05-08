@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title: Python 스터디 멘토 준비 3차
+title: Python 스터디 멘토 준비 3일차
 tags: Python 스터디 함수
 
 ---

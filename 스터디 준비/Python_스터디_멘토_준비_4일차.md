@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title: Python 스터디 멘토 준비 4차
+title: Python 스터디 멘토 준비 4일차
 tags: Python 스터디 format 문자열 정수와실수
 
 ---
