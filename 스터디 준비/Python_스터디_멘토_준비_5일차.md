@@ -79,4 +79,5 @@ exist = n in list8
 print(exist)
 >> true
 ```
+
 	* in 연산은 결과값이 boolean으로 나오기 때문에 조건문에서 유용함
