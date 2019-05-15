@@ -108,5 +108,5 @@ for key, value in dict.items():
     for a in dict.items():
     	print('{}은 {}'.format(*a))
     ```
-		* 여기서 *은 '쪼개다'라는 의미로 쓰인다.
-		* 하나씩 쪼개서 값 전달
+	* 여기서 *은 '쪼개다'라는 의미로 쓰인다.
+	* 하나씩 쪼개서 값 전달
