@@ -8,7 +8,7 @@ tags: Python 스터디 format 문자열 정수와실수
 
 ### format
 
-```
+```python
 
 year = 2019
 month = 5
@@ -29,7 +29,7 @@ print('오늘은 {}년 {}월 {}일 입니다.'.format(year, month, day))
 * 만약 다르다면 오류가 남
 
 ### 문자열
-```
+```python
 # 한줄 문자열
 string1 = 'this is string'
 string2 = "이것도 문자열"
@@ -55,7 +55,7 @@ print(long_string2)
 	* 부동소수점을 이용하여 표현하기 때문에 floating point 줄여서 float 로표현
 	* 연산에 있어 완벽한 정확성은 없음
 
-```
+```python
 num1 = 3
 num2 = 3.0
 num3 = 3.000000000
@@ -66,7 +66,7 @@ print(num3)
 # num2와 num3은 같지만 num1과는 같지 않다.
 ```
 
-```
+```python
 num4 = 5 * 1
 num5 = 5 * 1.0
 # 정수끼리의 연산 결과값은 정수이고

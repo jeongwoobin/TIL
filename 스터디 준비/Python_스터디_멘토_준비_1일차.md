@@ -19,7 +19,7 @@ tags: Python 스터디 시작 변수
 
 ### 변수
 
-```
+```python
 name = '홍길동'
 number_of_coin = 3
 number_of_coin = '3'
@@ -29,7 +29,7 @@ number_of_coin = '3'
 
 ### 출력
 
-```
+```python
 # 어떠한 문장을 화면에 나타내고 싶을 때
 print('Hello World!')
 print('나는 3학년 입니다.')
@@ -39,7 +39,7 @@ print('나는 '3'학년 입니다.')
 
 ### 연산
 
-```
+```python
 # +, -, *, /, %, **(제곱)
 
 name = '홍' + '길동'
