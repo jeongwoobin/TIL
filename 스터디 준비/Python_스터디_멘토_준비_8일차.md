@@ -64,49 +64,49 @@ for key, value in dict.items():
     list = [1, 2, 3, 4]
     tuple3 = tuple(list)
     ```
-	* packing
-	```
-	x = 1
-	y = 2
-	z = x, y
-	```
+    * packing
+    ```
+    x = 1
+    y = 2
+    z = x, y
+    ```
 
-	* unpacking
-	```
-	x = ( 1, 2 )
-	y, z = x
-	```
+    * unpacking
+    ```
+    x = ( 1, 2 )
+    y, z = x
+    ```
 
-	* x, y 값 변경
-	```
-	# 정석
-	x = 3
-	y = 6
-	temp = x
-	x = y
-	y = temp
+    * x, y 값 변경
+    ```
+    # 정석
+    x = 3
+    y = 6
+    temp = x
+    x = y
+    y = temp
 
-	# packing, unpacking 활용
-	x = 3
-	y = 6
-	x, y = y, x
-	```
+    # packing, unpacking 활용
+    x = 3
+    y = 6
+    x, y = y, x
+    ```
 
-	* tuple을 이용한 함수 리턴값
-	```
-	# tuple list
-	list = [ 1, 2, 3, 4 ]
-	for a in enumerate(list):
-	print('{}번째 값: {}'.format(a[0], a[1]))
-	for a in enumerate(list):
-	print('{}번째 값: {}'.format(*a))
+    * tuple을 이용한 함수 리턴값
+    ```
+    # tuple list
+    list = [ 1, 2, 3, 4 ]
+    for a in enumerate(list):
+    print('{}번째 값: {}'.format(a[0], a[1]))
+    for a in enumerate(list):
+    print('{}번째 값: {}'.format(*a))
 
-	# tuple dictionary
-	dict = { 'one' : 1, 'two' : 2, 'three' : 3 }
-	for a in dict.items():
-	print('{}은 {}'.format(a[0], a[1]))
-	for a in dict.items():
-	print('{}은 {}'.format(*a))
-	```
-		* 여기서 *은 '쪼개다'라는 의미로 쓰인다.
-		* 하나씩 쪼개서 값 전달
+    # tuple dictionary
+    dict = { 'one' : 1, 'two' : 2, 'three' : 3 }
+    for a in dict.items():
+    print('{}은 {}'.format(a[0], a[1]))
+    for a in dict.items():
+    print('{}은 {}'.format(*a))
+    ```
+        * 여기서 *은 '쪼개다'라는 의미로 쓰인다.
+        * 하나씩 쪼개서 값 전달
