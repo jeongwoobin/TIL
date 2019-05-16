@@ -50,20 +50,20 @@ for key, value in dict.items():
 
 ### Tuple
 * 정해진 순서가 있는 리스트
-```
-# 선언방법
-tuple1 = (1, 2, 3, 4)
-tuple2 = 1, 2, 3, 4
-print(tuple1[0])
->> 1
-tuple1[0] = 5
->> ERROR
-# 한번 선언한 튜플은 값을 삭제할수도, 변경할수도 없다.
+    ```
+    # 선언방법
+    tuple1 = (1, 2, 3, 4)
+    tuple2 = 1, 2, 3, 4
+    print(tuple1[0])
+    >> 1
+    tuple1[0] = 5
+    >> ERROR
+    # 한번 선언한 튜플은 값을 삭제할수도, 변경할수도 없다.
 
-# 선언된 리스트원소들을 튜플안에 넣기
-list = [1, 2, 3, 4]
-tuple3 = tuple(list)
-```
+    # 선언된 리스트원소들을 튜플안에 넣기
+    list = [1, 2, 3, 4]
+    tuple3 = tuple(list)
+    ```
     * packing
     ```
     x = 1
