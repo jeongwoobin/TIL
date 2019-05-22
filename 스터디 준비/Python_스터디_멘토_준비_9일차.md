@@ -21,13 +21,13 @@ class Human:
     	self.name = name
         self.weight = weight
     #특수한 메소드 -> 문자열화 함수
-	def __str__(self):
+    def __str__(self):
     	return "{}(몸무게 {}kg)".format(self.name, self.weight)
     #사용자 메소드
-	def eat(self):
+    def eat(self):
     	self.weight += 0.1
         print("{}가 먹어서 {}kg이 되었습니다".format(self.name, self.weight))
-	def walk(self):
+    def walk(self):
     	self.weight -= 0.1
         print("{}가 걸어서 {}kg이 되었습니다".format(self.name, self.weight))
 
@@ -43,14 +43,14 @@ person2.walk()
 ### 상속
 ```
 class Human():
-	def walk(self):
+    def walk(self):
     	print("걷는다")
-	def eat(self):
+    def eat(self):
     	print("먹는다")
     def wave(self):
     	print("손을 흔든다")
 class Dog():
-	def walk(self):
+    def walk(self):
     	print("걷는다")
     def eat(self):
     	print("먹는다")
@@ -64,30 +64,30 @@ class Dog():
 ```
 #부모 클래스
 class Animal():
-	def walk(self):
+    def walk(self):
     	print("걷는다")
-	def eat(self):
+    def eat(self):
     	print("먹는다")
 #자식 클래스
 class Human(Animal):
-	def wave(self):
+    def wave(self):
     	print("손을 흔든다")
 #자식 클래스
 class Dog(Animal):
-	def wag(self):
+    def wag(self):
     	print("꼬리를 흔든다")
 ```
 
 ### 오버라이드
 ```
 class Animal():
-	def greet(self):
+    def greet(self):
     	print("인사한다")
 class Human(Animal):
-	def greet(self):
+    def greet(self):
     	print("손을 흔든다")
 class Dog(Animal):
-	def greet(self):
+    def greet(self):
     	print("꼬리를 흔든다")
 ```
 
@@ -97,10 +97,10 @@ class Dog(Animal):
 * 자식클래스에서 부모클래스의 내용을 사용하고 싶은 경우
 ```
 class Animal():
-	def __init__(self, name):
+    def __init__(self, name):
     	self.name = name
 class Human(Animal):
-	def __init__(self, name, hand):
+    def __init__(self, name, hand):
     	super().__init__(name) #부모클래스의 __init__메소드 호출
         self.hand = hand
 
