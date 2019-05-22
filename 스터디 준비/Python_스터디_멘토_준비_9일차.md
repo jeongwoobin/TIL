@@ -16,8 +16,8 @@ tags: Python 스터디 클래스 인스턴스 상속 오버라이드 super()
 ```
 #클래스
 class Human:
-	#특수한 메소드 -> 초기화 함수
-	def __init__(self, name, weight):
+    #특수한 메소드 -> 초기화 함수
+    def __init__(self, name, weight):
     	self.name = name
         self.weight = weight
     #특수한 메소드 -> 문자열화 함수
