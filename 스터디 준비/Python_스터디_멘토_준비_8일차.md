@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title: Python 스터디 멘토 준비 7일차
+title: Python 스터디 멘토 준비 8일차
 tags: Python 스터디 딕셔너리 튜플
 
 ---
