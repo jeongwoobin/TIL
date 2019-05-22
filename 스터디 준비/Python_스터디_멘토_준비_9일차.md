@@ -14,8 +14,8 @@ tags: Python 스터디 클래스 인스턴스 상속 오버라이드 super()
 * 클래스에 의해 생성된 객체
 
 ```
-# 클래스
-class Human :
+#클래스
+class Human:
 	#특수한 메소드 -> 초기화 함수
 	def __init__(self, name, weight):
     	self.name = name
@@ -31,7 +31,7 @@ class Human :
     	self.weight -= 0.1
         print("{}가 걸어서 {}kg이 되었습니다".format(self.name, self.weight))
 
-# 인스턴스
+#인스턴스
 person1 = Human("사과", 60)
 person2 = Human("바나나", 30)
 person1.eat()
