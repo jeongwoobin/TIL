@@ -16,14 +16,14 @@ tags: Python 스터디 클래스 인스턴스 상속 오버라이드 super()
 ```
 # 클래스
 class Human :
-	# 특수한 메소드 -> 초기화 함수
+	#특수한 메소드 -> 초기화 함수
 	def __init__(self, name, weight):
     	self.name = name
         self.weight = weight
-    # 특수한 메소드 -> 문자열화 함수
+    #특수한 메소드 -> 문자열화 함수
 	def __str__(self):
     	return "{}(몸무게 {}kg)".format(self.name, self.weight)
-    # 사용자 메소드
+    #사용자 메소드
 	def eat(self):
     	self.weight += 0.1
         print("{}가 먹어서 {}kg이 되었습니다".format(self.name, self.weight))
@@ -62,17 +62,17 @@ class Dog():
 * 이러한 겹치는 메소드들을 하나의 클래스로 만들어 그 클래스의 내용을 가져다 쓸 수 있게 하는것을 상속이라고한다.
 
 ```
-# 부모 클래스
+#부모 클래스
 class Animal():
 	def walk(self):
     	print("걷는다")
 	def eat(self):
     	print("먹는다")
-# 자식 클래스
+#자식 클래스
 class Human(Animal):
 	def wave(self):
     	print("손을 흔든다")
-# 자식 클래스
+#자식 클래스
 class Dog(Animal):
 	def wag(self):
     	print("꼬리를 흔든다")
@@ -101,7 +101,7 @@ class Animal():
     	self.name = name
 class Human(Animal):
 	def __init__(self, name, hand):
-    	super().__init__(name) # 부모클래스의 __init__메소드 호출
+    	super().__init__(name) #부모클래스의 __init__메소드 호출
         self.hand = hand
 
 person = Human("사람", "오른손")
