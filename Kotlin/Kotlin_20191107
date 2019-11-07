@@ -1,0 +1,119 @@
+KOTLIN
+
+
+* 변수
+	val 변수명: 변수타입 = 값		// 읽기전용 ( 선언과 동시에 초기화 - 타입생략가능 )
+
+	var 변수명: 변수타입
+	
+	모든 타입은 클래스취급			// 기본타입 대문자로 시작 ( Int, Float, Double ... )
+	
+	
+* 함수
+	[ 접근 지정자 ]	[ inline ]	[ final ]	fun	함수명	( 매개변수1: 매개변수1타입, 매개변수2: 매개변수2타입 ): 반환형
+	
+	
+* 배열
+	fun main ( args: Array<String> ) ...
+	println ( args[0] )				// 대괄호를 통해 배열에 접근
+	
+	Array 타입으로 생성된 배열은 값 수정 불가
+	
+	
+* 출력
+	print(  )
+	println(  )
+	
+	
+* 문자열 포매팅
+	println( "a + b = ${ a + b }" )	// $변수명, ${변수명} = 표현식 -> 해당 수식 계산 후 출력
+	
+	val r = 5
+	val pi = 3.141592
+	print( "반지름이 $r 일 때 원주의 길이는 %.2f".format( 2 * pi * r ) )		// 소수둘째자리까지 출력하고 싶을 때 -> String의 format매서드
+	
+
+* Null Safety
+	var text: String? = null		// Nullable -> ?를 붙여 null값을 가질 수 있는 변수임을 알림
+
+	// Non-Null인 경우 해당 벼수 값이 null이 아님을 보장 -> 잠재적인 NullPointException 발생하지 않음
+	// 인자를 넘길 때 null을 넘겨도 되는지 알 수 있음
+	
+	
+* Nullable 타입
+	// 변수의 타입이 Nullable인 경우 null값에 함수호출 시도시 NullPointException발생 -> Nullable변수 메서드호출 시 Null이 아님을 보장해야함
+	
+	fun saveFileText( fileText: String? ) {
+		if ( fileText == null ) return
+			// 이 아래부터 fileText 타입은 Stirng? 에서 String으로 바뀜
+		val isValid = fileText.thisIsName( "TOM" )
+	}
+	
+	fun saveFileText( fileText: String? ) {
+		if ( fileText != null ) {
+			val isValid = fileText.thisIsName( "TOM" )
+		}
+	}
+	
+	// 이처럼 Nullable을 Non-Null로 변화하여 메서드를 정상적으로 호출할 수 있게 함 -> Smart Cast
+
+
+* ?
+	fun getFirstChar( text: String? ): Char? {
+		return text?.get(0)				// text가 null이면 get메서드 호출 X, get 리턴값도 null이 됨
+	}
+
+	// Nullable 변수(위에서는 text) 뒤에 ? 적을 시 null값에 대한 방어가능. 만약 변수가 null일 경우 뒤의 메소드 호출 모두 무시, null 리턴
+	
+	fun getTextOf( editText: EditText? ): String? {
+		return editText?.getText()?.toString()		// editText가 null일 경우와 getText가 null인 경우 모두 방어
+	}
+	
+
+* !!
+	// null값이 아님이 확실한데도 Nullable로 선언된 경우 변수뒤에 !!붙여 Non-Null로 강제 캐스팅
+	
+	fun onCreateView( inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
+		// inflater는 Non-Null 확실. !!붙여 LayoutInflater로 강제캐스팅
+		inflater!!.inflate( R.layout.fragment_statistics, container )
+		
+		return super.onCreateView( inflater, container, savedInstanceState )
+	}
+
+	// 만약 강제캐스팅한 변수가 null이라면 NullPointException발생
+	
+
+* Elvis 연산자
+	// ?: 좌항이 null일 경우 우항 대입
+
+	fun function( param: Map<String, String> ) {
+		// param.get( "key" )값이 null 이면 ?: 오른쪽에 있는 "default value"가 value에 대입
+		val value = param.get( "key" ) ?: "default value"
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+참고 : http://blog.naver.com/PostView.nhn?blogId=eominsuk55&logNo=221035669533&parentCategoryNo=&categoryNo=1&viewDate=&isShowPopularPosts=true&from=search
+	
