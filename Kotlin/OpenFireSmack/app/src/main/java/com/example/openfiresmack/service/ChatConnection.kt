@@ -4,10 +4,12 @@ import android.content.Context
 import android.preference.PreferenceManager
 import android.util.Log
 import org.jivesoftware.smack.ConnectionListener
+import org.jivesoftware.smack.ReconnectionManager
+import org.jivesoftware.smack.SmackException
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.tcp.XMPPTCPConnection
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
-import java.io.IOException
+import org.jxmpp.jid.impl.JidCreate
 
 class ChatConnection: ConnectionListener {
     lateinit var mApplicationContext: Context
@@ -45,7 +47,32 @@ class ChatConnection: ConnectionListener {
         val builder: XMPPTCPConnectionConfiguration.Builder = XMPPTCPConnectionConfiguration.builder()
 
         // ############################################## 2020/08/06 #################################################
-        builder.setServiceName(mServiceName)
+        val jId = JidCreate.domainBareFrom(mServiceName)
+        builder.setServiceName(jId)
+        builder.setUsernameAndPassword(mUserName, mPassWord)
+        // builder.setRosterLoadedAtLogin(true)  없음
+        builder.setResource("Chat")
+
+        mConnection = XMPPTCPConnection(builder.build())
+        mConnection.addConnectionListener(this)
+        mConnection.connect()
+        mConnection.login()
+
+        val reconnectionManager = ReconnectionManager.getInstanceFor(mConnection)
+        // reconnectionManager.setEnabledPerDefault(true)   없음
+        reconnectionManager.enableAutomaticReconnection()
+    }
+
+    fun disconnect() {
+        Log.d("DEBUG", "Disconnection from Server : " + mServiceName)
+        try {
+            if(mConnection != null) {
+                mConnection.disconnect()
+            }
+        } catch (e: SmackException.NotConnectedException) {
+            ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED
+            e.printStackTrace()
+        }
     }
 
 
