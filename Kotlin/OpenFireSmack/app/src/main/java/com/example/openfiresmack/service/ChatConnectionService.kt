@@ -6,13 +6,40 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import java.lang.Exception
 
 class ChatConnectionService : Service() {
-
     private var mActive: Boolean = false
     private var mThread: Thread? = null
     private lateinit var mTHandler: Handler
+    private var mConnection: ChatConnection? = null
 
+    companion object {
+
+        val UI_AUTHENTICATED = "com.blikoon.rooster.uiauthenticated"
+        val SEND_MESSAGE = "com.blikoon.rooster.sendmessage"
+        val BUNDLE_MESSAGE_BODY = "b_body"
+        val BUNDLE_TO = "b_to"
+        var sConnectionState: ChatConnection.ConnectionState? = null
+        lateinit var sLoggedInState: ChatConnection.LoggedInState
+
+        fun getState(): ChatConnection.ConnectionState {
+            return if (sConnectionState == null) {
+                ChatConnection.ConnectionState.DISCONNECTED
+            } else {
+                sConnectionState!!
+            }
+        }
+    }
+
+
+    fun getLoggedInState(): ChatConnection.LoggedInState {
+        return if(sLoggedInState == null) {
+            ChatConnection.LoggedInState.LOGGED_OUT
+        } else {
+            sLoggedInState
+        }
+    }
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
@@ -22,6 +49,21 @@ class ChatConnectionService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.d("DEBUG", "onCreate()")
+    }
+
+    private fun initConnection() {
+        Log.d("DEBUG", "initConnection()")
+        if(mConnection == null) {
+            mConnection = ChatConnection(this)
+        }
+        try {
+            mConnection!!.connect()
+        } catch(e: Exception) {
+            Log.d("DEBUG", "Something went wrong while connection, make sure the creentials are right and try again")
+            e.printStackTrace()
+
+            stopSelf()
+        }
     }
 
     fun start() {
@@ -50,7 +92,9 @@ class ChatConnectionService : Service() {
         mTHandler.post(Runnable {
             @Override
             fun run() {
-                //서버 닫는 코드
+                if(mConnection != null) {
+                    mConnection!!.disconnect()
+                }
             }
         })
     }
