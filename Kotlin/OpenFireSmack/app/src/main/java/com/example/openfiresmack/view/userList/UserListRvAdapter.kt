@@ -23,7 +23,7 @@ class UserListRvAdapter (val context: Context, val data: ArrayList<UserList>) :
 
                 tv_UserListItem.setOnClickListener {
                     // 채팅시작
-                    Log.d("DEBUG", tv_UserListItem.text.toString())
+                    Log.d("DEBUG", "tv_UserListItem : " + tv_UserListItem.text.toString())
                     val intent = Intent(context, ChatActivity::class.java)
                     intent.putExtra("ID", tv_UserListItem.text.toString())
                     context.startActivity(intent)

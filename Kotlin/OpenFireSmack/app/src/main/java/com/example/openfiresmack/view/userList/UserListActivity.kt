@@ -23,7 +23,7 @@ class UserListActivity : AppCompatActivity() {
     fun setData() {
         // db에서 유저list 받아와서 UserList dataclass에 저장
         for(i in 1..5) {
-            item.add(UserList("name$i@example.com"))
+            item.add(UserList("name$i@localhost"))
         }
     }
 }
