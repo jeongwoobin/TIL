@@ -1,5 +1,6 @@
 package com.example.openfiresmack.view
 
+import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,7 +11,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.openfiresmack.R
 import com.example.openfiresmack.service.ChatConnectionService
-import com.example.openfiresmack.view.chat.ChatActivity
 import com.example.openfiresmack.view.userList.UserListActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -18,9 +18,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 lateinit var intent: Intent
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-//        lateinit var cid = et_Id.text.toString()
-    }
     private var mBroadcastReceiver: BroadcastReceiver? = null
     private val mContext: Context? = null
 
@@ -30,36 +27,26 @@ class MainActivity : AppCompatActivity() {
 
         btn_SignIn.setOnClickListener {
             saveCredentialsAndLogin()
-//            Log.d("DEBUG", "prefId : " + PreferenceManager.getDefaultSharedPreferences(ChatConnection.mApplicationContext).getString("xmpp_mId", null))
-//            Log.d("DEBUG", "prefPw : " + PreferenceManager.getDefaultSharedPreferences(ChatConnection.mApplicationContext).getString("xmpp_mPw", null))
-            intent = Intent(this, UserListActivity::class.java)
-
-//            intent = Intent(this, ChatActivity::class.java)
-//            intent.putExtra("mId", et_Id.text.toString())
-            startActivity(intent)
         }
-
-//        btn_SignUp.setOnClickListener {
-//            intent = Intent(this, SignUpActivity::class.java)
-//            startActivity(intent)
-//        }
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(mBroadcastReceiver)
+        this.unregisterReceiver(mBroadcastReceiver)
     }
 
     override fun onResume() {
         super.onResume()
+
         mBroadcastReceiver = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
+                Log.d("DEBUG", "MainActivity : onReceive")
                 val action = intent?.action
                 when (action) {
                     ChatConnectionService.UI_AUTHENTICATED -> {
                         Log.d("DEBUG", "MainActivity : Got a broadcast to show the main app window")
                         //Show the main app window
-                        val i2 = Intent(mContext, UserListActivity::class.java)
+                        val i2 = Intent(context, UserListActivity::class.java)
                         startActivity(i2)
                         finish()
                     }
@@ -89,5 +76,16 @@ class MainActivity : AppCompatActivity() {
         val i1 = Intent(this, ChatConnectionService::class.java)
         Log.d("DEBUG", "MainActivity : ChatConnectionService start")
         startService(i1)
+    }
+
+    private fun isServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager =
+            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

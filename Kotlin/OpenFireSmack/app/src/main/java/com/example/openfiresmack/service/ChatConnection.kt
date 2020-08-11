@@ -6,12 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.preference.PreferenceManager
 import android.util.Log
-import com.example.openfiresmack.view.chat.ChatActivity.Companion.cId
-import org.jivesoftware.smack.ConnectionListener
-import org.jivesoftware.smack.ReconnectionManager
-import org.jivesoftware.smack.SmackException
+import org.jivesoftware.smack.*
 import org.jivesoftware.smack.SmackException.NotConnectedException
-import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.chat2.Chat
 import org.jivesoftware.smack.chat2.ChatManager
 import org.jivesoftware.smack.packet.Message
@@ -20,6 +16,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
 import org.jxmpp.jid.EntityBareJid
 import org.jxmpp.jid.impl.JidCreate
 import org.jxmpp.stringprep.XmppStringprepException
+import java.net.InetAddress
 
 class ChatConnection: ConnectionListener {
 
@@ -42,7 +39,6 @@ class ChatConnection: ConnectionListener {
     constructor(context: Context) {
         Log.d("DEBUG", "ChatConnection : chatConnection Constructor called.")
         mApplicationContext = context.applicationContext
-//        val mId: String? = PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getString("xmpp_mId", null)
 
         val mId = PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getString("xmpp_mId", null)
         mPassWord = PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getString("xmpp_mPw", null)
@@ -120,13 +116,16 @@ class ChatConnection: ConnectionListener {
     fun connect() {
         Log.d("DEBUG", "ChatConnection : Connecting to Server : " + mServiceName)
         val jId = JidCreate.domainBareFrom(mServiceName)
+        Log.d("DEBUG", "ChatConnection : Jid : $jId")
         val builder = XMPPTCPConnectionConfiguration.builder()
             .setUsernameAndPassword(mUserName, mPassWord)
-            .setHost("localhost")
+            .setHostAddress(InetAddress.getByName("192.168.0.6"))
+//            .setHostAddress(InetAddress.getByName("10.0.2.2"))
             .setXmppDomain(jId)
             .setPort(5222)
     //        builder.setRosterLoadedAtLogin(true)  // 없음
             .setResource("Chat")
+            .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
 
         setupUiThreadBroadCastMessageReceiver()
 

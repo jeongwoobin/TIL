@@ -10,24 +10,26 @@ import android.util.Log
 class ChatConnectionService : Service() {
     private var mActive: Boolean = false
     private var mThread: Thread? = null
-    private lateinit var mTHandler: Handler
     private var mConnection:ChatConnection? = null
+    private lateinit var mTHandler: Handler
     private lateinit var sLoggedInState: ChatConnection.LoggedInState
 
     companion object {
 
-        val UI_AUTHENTICATED = "com.example.openfiresmack.uiauthenticated"
-        val SEND_MESSAGE = "com.example.openfiresmack.sendmessage"
-        val NEW_MESSAGE = "com.example.openfiresmack.newmessage"
-        val BUNDLE_MESSAGE_BODY = "b_body"
-        val BUNDLE_TO = "user"
-        val BUNDLE_FROM = "user2"
-        var sConnectionState: ChatConnection.ConnectionState? = ChatConnection.ConnectionState.CONNECTED
+        const val UI_AUTHENTICATED = "com.example.openfiresmack.uiauthenticated"
+        const val SEND_MESSAGE = "com.example.openfiresmack.sendmessage"
+        const val NEW_MESSAGE = "com.example.openfiresmack.newmessage"
+        const val BUNDLE_MESSAGE_BODY = "b_body"
+        const val BUNDLE_TO = "b_to"
+        const val BUNDLE_FROM = "b_from"
+        var sConnectionState: ChatConnection.ConnectionState = ChatConnection.ConnectionState.DISCONNECTED
 
         fun getState(): ChatConnection.ConnectionState {
             return if (sConnectionState == null) {
+                Log.d("DEBUG", "ChatConnectionService : sConnectionState == null")
                 ChatConnection.ConnectionState.DISCONNECTED
             } else {
+                Log.d("DEBUG", "ChatConnectionService : sConnectionState != null")
                 sConnectionState!!
             }
         }
@@ -71,34 +73,34 @@ class ChatConnectionService : Service() {
 
     fun start() {
         Log.d("DEBUG", "ChatConnectionService : Service Start() called.")
+
         if(!mActive) {
             mActive = true
             if(mThread == null || !mThread!!.isAlive) {
+                Log.d("DEBUG", "if(mThread == null || !mThread!!.isAllive)")
                 mThread = Thread(Runnable {
-                    @Override
-                    fun run() {
                         Log.d("DEBUG", "ChatConnectionService : start.run()")
                         Looper.prepare()
                         mTHandler = Handler()
                         initConnection()
                         //background thread에서 할 코드
                         Looper.loop()
-                    }
                 })
                 mThread!!.start()
+            }
+            else {
+                Log.d("DEBUG", "if(mThread != null)")
             }
         }
     }
 
     fun stop() {
         Log.d("DEBUG", "ChatConnectionService : stop()")
+
         mActive = false
         mTHandler.post(Runnable {
-            @Override
-            fun run() {
-                if(mConnection != null) {
-                    mConnection!!.disconnect()
-                }
+            if(mConnection != null) {
+                mConnection!!.disconnect()
             }
         })
     }
@@ -106,7 +108,7 @@ class ChatConnectionService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("DEBUG", "ChatConnectionService : onStartCommand()")
         start()
-        return Service.START_STICKY
+        return START_STICKY
     }
 
     override fun onDestroy() {
