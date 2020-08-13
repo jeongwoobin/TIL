@@ -1,17 +1,37 @@
+/**
+ * UserList.class
+ * 기능 : 유저 데이터 저장 클래스
+ */
+
 package com.geurimsoft.gmessenger.data;
 
 public class UserList {
     private String jid;
 
-    public UserList(String contactJid)
-    {
+    /**
+     * @func UserList 생성자
+     * @param contactJid
+     * @return
+     */
+    public UserList(String contactJid) {
         jid = contactJid;
     }
 
-    public String getJid()
-    {
+    /**
+     * @func UserList getter
+     * @param
+     * @return jid
+     */
+    public String getJid() {
         return jid;
     }
 
-    public void setJid(String jid) { this.jid = jid; }
+    /**
+     * @func UserList setter
+     * @param jid
+     * @return
+     */
+    public void setJid(String jid) {
+        this.jid = jid;
+    }
 }
