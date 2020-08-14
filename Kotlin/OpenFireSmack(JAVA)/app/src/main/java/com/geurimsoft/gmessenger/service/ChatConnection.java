@@ -138,11 +138,10 @@ public class ChatConnection implements ConnectionListener {
     }
     
     /**
-     * @func 사용자 인증되었을 때 setpackage?????
+     * @func 사용자인증 확인되었을때 호출되는 메소드
      * @param 
      * @return 
      */
-    // 사용자가 인증되면 호출
     private void showUserListActivityWhenAuthenticated() {
         Log.d("DEBUG", "ChatConnection : showUserListActivityWhenAuthenticated()");
         Intent i = new Intent(ChatConnectionService.UI_AUTHENTICATED);
@@ -150,6 +149,13 @@ public class ChatConnection implements ConnectionListener {
         mApplicationContext.sendBroadcast(i);
     }
 
+    /**
+     * @func 직접적인 서버 연결 메소드
+     *       로그인 정보와 ip, domain, port로 XMPP 객체 생성하여 서버에 연결
+     *       UI 스레드 broadcast message receiver 설정
+     * @param
+     * @return
+     */
     public void connect() throws IOException, XMPPException, SmackException {
         Log.d("DEBUG", "ChatConnection : connect()");
         DomainBareJid jId = JidCreate.domainBareFrom(mServiceName);
@@ -174,6 +180,11 @@ public class ChatConnection implements ConnectionListener {
             Log.d("DEBUG", "ChatConnection : connect() - catch : " + e.toString());
         }
 
+        /**
+         * @func 새로 들어온 메시지가 있을 때 ChatConnectionService.NEW_MESSAGE 객체 생성하여 메시지데이터 저장 후 Broadcast
+         * @param messageFrom, message, chat
+         * @return
+         */
         ChatManager.getInstanceFor(mConnection).addIncomingListener(new IncomingChatMessageListener() {
             @Override
             public void newIncomingMessage(EntityBareJid messageFrom, Message message, Chat chat) {
@@ -184,7 +195,7 @@ public class ChatConnection implements ConnectionListener {
                 String from = message.getFrom().toString();
                 String contactJid = "";
 
-                // 가끔 from에 /~가 붙는 경우가 잇음 찾아볼것
+                // getFrom()끝에 /가 붙는 경우가 잇음
                 if(from.contains("/")) {
                     contactJid = from.split("/")[0];
                 }
@@ -206,6 +217,12 @@ public class ChatConnection implements ConnectionListener {
         reconnectionManager.enableAutomaticReconnection();
     }
 
+    /**
+     * @func UserListActivity가 destroy되면  ChatConnectionService에서 호출
+     *       mConnection에 저장되어있던 XMPP연결 해제
+     * @param 
+     * @return 
+     */
     public void disconnect() {
         Log.d("DEBUG", "ChatConnection : disconnect()");
         if (mConnection != null) {
@@ -215,13 +232,22 @@ public class ChatConnection implements ConnectionListener {
         mConnection = null;
     }
 
+    /**
+     * @func 서버와 연결되면 호출
+     * @param 
+     * @return 
+     */
     @Override
     public void connected(XMPPConnection connection) {
         Log.d("DEBUG", "ChatConnection : connected()");
         ChatConnectionService.sConnectionState = ConnectionState.CONNECTED;
     }
 
-    // 사용자가 인증되면 호출
+    /**
+     * @func 사용자가 인증되면 호출
+     * @param 
+     * @return 
+     */
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
         Log.d("DEBUG", "ChatConnection : authenticated()");
@@ -229,30 +255,55 @@ public class ChatConnection implements ConnectionListener {
         showUserListActivityWhenAuthenticated();
     }
 
+    /**
+     * @func 연결끊겼을 때 호출
+     * @param 
+     * @return 
+     */
     @Override
     public void connectionClosed() {
         Log.d("DEBUG", "ChatConnection : connectionClosed()");
         ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED;
     }
 
+    /**
+     * @func error로 연결 끊겼을 때 호출
+     * @param e
+     * @return 
+     */
     @Override
     public void connectionClosedOnError(Exception e) {
         Log.d("DEBUG", "ChatConnection : connectionClosedOnError()");
         ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED;
     }
 
+    /**
+     * @func 재연결 성공시 호출
+     * @param 
+     * @return 
+     */
     @Override
     public void reconnectionSuccessful() {
         Log.d("DEBUG", "ChatConnection : reconnectionSuccessful()");
         ChatConnectionService.sConnectionState = ConnectionState.CONNECTED;
     }
 
+    /**
+     * @func 재연결중일 때 호출
+     * @param 
+     * @return 
+     */
     @Override
     public void reconnectingIn(int seconds) {
         Log.d("DEBUG", "ChatConnection : reconnectingIn()");
         ChatConnectionService.sConnectionState = ConnectionState.CONNECTING;
     }
 
+    /**
+     * @func 재연결 실패시 호출
+     * @param 
+     * @return 
+     */
     @Override
     public void reconnectionFailed(Exception e) {
         Log.d("DEBUG", "ChatConnection : reconnectionFailed()");
