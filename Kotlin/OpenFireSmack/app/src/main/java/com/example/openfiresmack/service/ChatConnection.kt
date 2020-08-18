@@ -119,10 +119,9 @@ class ChatConnection: ConnectionListener {
         Log.d("DEBUG", "ChatConnection : Jid : $jId")
         val builder = XMPPTCPConnectionConfiguration.builder()
             .setUsernameAndPassword(mUserName, mPassWord)
-            .setHostAddress(InetAddress.getByName("192.168.0.6"))
-//            .setHostAddress(InetAddress.getByName("10.0.2.2"))
+            .setHostAddress(InetAddress.getByName("youradress"))
             .setXmppDomain(jId)
-            .setPort(5222)
+            .setPort(yourport)
     //        builder.setRosterLoadedAtLogin(true)  // 없음
             .setResource("Chat")
             .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
