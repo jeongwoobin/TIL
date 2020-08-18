@@ -15,7 +15,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.geurimsoft.gmessenger.data.App_Debug;
+import com.geurimsoft.gmessenger.data.AppConfig;
 
 public class ChatConnectionService extends Service
 {
@@ -40,8 +40,7 @@ public class ChatConnectionService extends Service
      */
     public ChatConnectionService()
     {
-
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : ChatConnectionService()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnectionService()");
     }
 
     /**
@@ -51,18 +50,17 @@ public class ChatConnectionService extends Service
     public static ChatConnection.ConnectionState getState()
     {
 
-        Log.d(App_Debug.APP_DEBUG, ChatConnectionService.class.getName() + " : getState()");
+        Log.d(AppConfig.APP_DEBUG, ChatConnectionService.class.getName() + " : getState()");
 
         if(sConnectionState == null)
         {
-
             return ChatConnection.ConnectionState.DISCONNECTED;
         }
         else
         {
-
             return sConnectionState;
         }
+
     }
 
 //    /**
@@ -89,8 +87,9 @@ public class ChatConnectionService extends Service
     public IBinder onBind(Intent intent)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onBind()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBind()");
         return null;
+
     }
 
     /**
@@ -101,7 +100,8 @@ public class ChatConnectionService extends Service
     {
 
         super.onCreate();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onCreate()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onCreate()");
+
     }
 
     /**
@@ -110,25 +110,26 @@ public class ChatConnectionService extends Service
     private void initConnection()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : initConnection()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : initConnection()");
 
         if(cConnection == null)
         {
-
             cConnection = new ChatConnection(this);
         }
 
         try
         {
-
             cConnection.connect();
         }
         catch (Exception e)
         {
+
             e.printStackTrace();
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : initConnection() : catch = " + e.toString());
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : initConnection() : catch = " + e.toString());
             stopSelf();
+
         }
+
     }
 
     /**
@@ -138,7 +139,7 @@ public class ChatConnectionService extends Service
     public void start()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : start()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : start()");
 
         if(!mActive)
         {
@@ -155,17 +156,22 @@ public class ChatConnectionService extends Service
                     public void run()
                     {
 
-                        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : start() : run()");
+                        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : start() : run()");
                         Looper.prepare();
                         mTHandler = new Handler();
                         initConnection();
                         Looper.loop();
+
                     }
+
                 });
 
                 mThread.start();
+
             }
+
         }
+
     }
 
     /**
@@ -174,7 +180,7 @@ public class ChatConnectionService extends Service
     public void stop()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : stop()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : stop()");
 
         mActive = false;
         mTHandler.post(new Runnable()
@@ -184,16 +190,20 @@ public class ChatConnectionService extends Service
             public void run()
             {
 
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : stop() : run()");
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : stop() : run()");
 
                 if(cConnection != null)
                 {
 
-                    Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : stop() : run() : disconnect()");
+                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : stop() : run() : disconnect()");
                     cConnection.disconnect();
+
                 }
+
             }
+
         });
+
     }
 
     /**
@@ -207,9 +217,10 @@ public class ChatConnectionService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onStartCommand()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onStartCommand()");
         start();
         return Service.START_STICKY;
+
     }
 
     /**
@@ -221,7 +232,9 @@ public class ChatConnectionService extends Service
     {
 
         super.onDestroy();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onDestroy()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onDestroy()");
         stop();
+
     }
+
 }

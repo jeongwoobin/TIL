@@ -1,12 +1,13 @@
 /**
  * App_Debug.class
- * 기능 : LOG 태그 상수 정의 클래스
+ * 기능 : 여러 final 데이터 저장
  */
 
 package com.geurimsoft.gmessenger.data;
 
-public class App_Debug
+public class AppConfig
 {
 
     public static final String APP_DEBUG = "Geurimsoft";
+
 }

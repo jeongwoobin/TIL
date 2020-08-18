@@ -43,7 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.geurimsoft.gmessenger.R;
-import com.geurimsoft.gmessenger.data.App_Debug;
+import com.geurimsoft.gmessenger.data.AppConfig;
 import com.geurimsoft.gmessenger.service.ChatConnectionService;
 import com.geurimsoft.gmessenger.view.userList.UserListActivity;
 
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onCreate()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onCreate()");
 
         et_Id = findViewById(R.id.et_Id);
         et_Pw = findViewById(R.id.et_Pw);
@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-
                 saveCredentialsAndLogin();
             }
         });
+
     }
 
     /**
@@ -92,9 +92,10 @@ public class MainActivity extends AppCompatActivity
     {
 
         super.onPause();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onPause()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onPause()");
 
         this.unregisterReceiver(mBroadcastReceiver);
+
     }
 
     /**
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity
     {
 
         super.onResume();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onResume()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onResume()");
 
         mBroadcastReceiver = new BroadcastReceiver()
         {
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity
                 switch(action)
                 {
                     case ChatConnectionService.UI_AUTHENTICATED:
-                        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : Got a broadcast to show the main app window");
+                        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : Got a broadcast to show the main app window");
 
                         //Show the main app window
                         Intent i2 = new Intent(getApplicationContext(), UserListActivity.class);
@@ -128,11 +129,14 @@ public class MainActivity extends AppCompatActivity
                         finish();
                         break;
                 }
+
             }
+
         };
 
         IntentFilter filter = new IntentFilter(ChatConnectionService.UI_AUTHENTICATED);
         this.registerReceiver(mBroadcastReceiver, filter);
+
     }
 
     /**
@@ -142,7 +146,7 @@ public class MainActivity extends AppCompatActivity
     private void saveCredentialsAndLogin()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : saveCredentialsAndLogin() called.");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : saveCredentialsAndLogin() called.");
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit()
@@ -152,7 +156,8 @@ public class MainActivity extends AppCompatActivity
                 .apply();
 
         Intent i1 = new Intent(getApplicationContext(), ChatConnectionService.class);
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : ChatConnectionService start");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnectionService start");
         startService(i1);
+
     }
 }

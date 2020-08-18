@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.geurimsoft.gmessenger.R;
-import com.geurimsoft.gmessenger.data.App_Debug;
+import com.geurimsoft.gmessenger.data.AppConfig;
 import com.geurimsoft.gmessenger.data.UserList;
 import com.geurimsoft.gmessenger.view.chat.ChatActivity;
 
@@ -39,6 +39,7 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
 
         mUserList = data;
         this.context = context;
+
     }
 
     /**
@@ -54,6 +55,7 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
 
         View holderView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
         return new ItemViewHolder(holderView);
+
     }
 
     /**
@@ -79,12 +81,13 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
 
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra("ID", holder.tv_UserListItem.getText().toString());
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : context = " + context);
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : holder.tv_UserListItem.getText().toString() = " + holder.tv_UserListItem.getText().toString());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : context = " + context);
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : holder.tv_UserListItem.getText().toString() = " + holder.tv_UserListItem.getText().toString());
 
                 context.startActivity(intent);
             }
         });
+
     }
 
     /**
@@ -94,7 +97,6 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
     @Override
     public int getItemCount()
     {
-
         return mUserList.size();
     }
 
@@ -117,6 +119,9 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
 
             super(view);
             tv_UserListItem = itemView.findViewById(R.id.tv_UserListItem);
+
         }
+
     }
+
 }

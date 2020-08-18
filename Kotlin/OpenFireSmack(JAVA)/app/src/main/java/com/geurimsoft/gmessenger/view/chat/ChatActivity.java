@@ -19,7 +19,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.geurimsoft.gmessenger.R;
-import com.geurimsoft.gmessenger.data.App_Debug;
+import com.geurimsoft.gmessenger.data.AppConfig;
 import com.geurimsoft.gmessenger.service.ChatConnection;
 import com.geurimsoft.gmessenger.service.ChatConnectionService;
 
@@ -43,9 +43,10 @@ public class ChatActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onCreate()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onCreate()");
 
         chat_view = findViewById(R.id.chat_view);
+
     }
 
     /**
@@ -56,8 +57,9 @@ public class ChatActivity extends AppCompatActivity
     {
 
         super.onPause();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onPause()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onPause()");
         unregisterReceiver(mBroadcastReceiver);
+
     }
 
     /**
@@ -69,11 +71,11 @@ public class ChatActivity extends AppCompatActivity
     {
 
         super.onResume();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onResume()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onResume()");
 
         Intent intent = getIntent();
         contactJid = intent.getStringExtra("ID");
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : contactJid = " + contactJid);
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : contactJid = " + contactJid);
         setTitle(contactJid);
 
         chat_view.setOnSentMessageListener(new ChatView.OnSentMessageListener()
@@ -89,7 +91,7 @@ public class ChatActivity extends AppCompatActivity
             public boolean sendMessage(ChatMessage chatMessage)
             {
 
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : sendMessage()");
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage()");
                 String mName = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("xmpp_mId", null);
 
                 if(ChatConnectionService.getState() == ChatConnection.ConnectionState.CONNECTED)
@@ -101,14 +103,16 @@ public class ChatActivity extends AppCompatActivity
                     i1.putExtra(ChatConnectionService.BUNDLE_FROM, mName);
 
                     sendBroadcast(i1);
+
                 }
                 else
                 {
-
                     Toast.makeText(getApplicationContext(), "Client not connected to server ,Message not sent!", Toast.LENGTH_LONG).show();
                 }
                 return true;
+
             }
+
         });
 
         mBroadcastReceiver = new BroadcastReceiver()
@@ -126,7 +130,7 @@ public class ChatActivity extends AppCompatActivity
             public void onReceive(Context context, Intent intent)
             {
 
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onReceive()");
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onReceive()");
                 String action = intent.getAction();
 
                 switch(action)
@@ -139,22 +143,27 @@ public class ChatActivity extends AppCompatActivity
                         if(from.equals(contactJid))
                         {
 
-                            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onReceive if");
+                            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onReceive if");
 //                            chat_view.receiveMessage(body);
                             ChatMessage chatMessage = new ChatMessage( body, System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                             chat_view.addMessage(chatMessage);
+
                         }
                         else
                         {
-
-                            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onReceive else");
+                            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onReceive else");
                         }
                         return;
+
                 }
+
             }
+
         };
 
         IntentFilter filter = new IntentFilter(ChatConnectionService.NEW_MESSAGE);
         registerReceiver(mBroadcastReceiver, filter);
+
     }
+
 }

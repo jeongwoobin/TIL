@@ -14,9 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.geurimsoft.gmessenger.R;
-import com.geurimsoft.gmessenger.data.App_Debug;
+import com.geurimsoft.gmessenger.data.AppConfig;
 import com.geurimsoft.gmessenger.data.UserList;
-import com.geurimsoft.gmessenger.service.ChatConnection;
 import com.geurimsoft.gmessenger.service.ChatConnectionService;
 
 import java.util.ArrayList;
@@ -36,10 +35,11 @@ public class UserListActivity extends AppCompatActivity
     {
 
         super.onCreate(savedInstanceState);
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onCreate()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onCreate()");
         setContentView(R.layout.activity_user_list);
 
         rv_UserList = findViewById(R.id.rv_UserList);
+
     }
 
     /**
@@ -51,12 +51,13 @@ public class UserListActivity extends AppCompatActivity
     {
 
         super.onResume();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onResume()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onResume()");
 
         setData();
 
         rv_UserList.setLayoutManager(new LinearLayoutManager(this));
         rv_UserList.setAdapter(new UserListRvAdapter(this, item));
+
     }
 
     /**
@@ -68,13 +69,14 @@ public class UserListActivity extends AppCompatActivity
     {
 
         super.onDestroy();
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : onDestroy()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onDestroy()");
 
         Intent i1 = new Intent(getApplicationContext(), ChatConnectionService.class);
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : ChatConnectionService stop");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnectionService stop");
         stopService(i1);
 
         finish();
+
     }
 
     /**
@@ -83,7 +85,7 @@ public class UserListActivity extends AppCompatActivity
     private void setData()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : setData()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : setData()");
 
         for(int i = 1; i <6; i++)
         {
@@ -91,5 +93,7 @@ public class UserListActivity extends AppCompatActivity
             UserList ul = new UserList("user" + i + "@localhost");
             item.add(ul);
         }
+
     }
+
 }

@@ -13,7 +13,7 @@ import android.content.IntentFilter;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.geurimsoft.gmessenger.data.App_Debug;
+import com.geurimsoft.gmessenger.data.AppConfig;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
@@ -63,7 +63,7 @@ public class ChatConnection implements ConnectionListener
     public ChatConnection(Context context)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : ChatConnection()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnection()");
         mApplicationContext = context.getApplicationContext();
 
         String mId = PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getString("xmpp_mId", null);
@@ -74,16 +74,19 @@ public class ChatConnection implements ConnectionListener
 
             mUserName = mId.split("@")[0];
             mServiceName = mId.split("@")[1];
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : ChatConnection : mUserName = " + mUserName);
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : ChatConnection : mServiceName = " + mServiceName);
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnection : mUserName = " + mUserName);
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnection : mServiceName = " + mServiceName);
+
         }
         else
         {
 
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : ChatConnection : mId == null");
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnection : mId == null");
             mUserName = "";
             mServiceName = "";
+
         }
+
     }
 
     /**
@@ -92,7 +95,7 @@ public class ChatConnection implements ConnectionListener
     private void setupUiThreadBroadCastMessageReceiver()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : setupUiThreadBroadCastMessageReceiver()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : setupUiThreadBroadCastMessageReceiver()");
         uiTHreadMessageReceiver = new BroadcastReceiver()
         {
 
@@ -102,16 +105,18 @@ public class ChatConnection implements ConnectionListener
 
                 if(intent.getAction().equals(ChatConnectionService.SEND_MESSAGE))
                 {
-
                     sendMessage(intent.getStringExtra(ChatConnectionService.BUNDLE_MESSAGE_BODY),
                             intent.getStringExtra(ChatConnectionService.BUNDLE_TO));
                 }
+
             }
+
         };
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ChatConnectionService.SEND_MESSAGE);
         mApplicationContext.registerReceiver(uiTHreadMessageReceiver, filter);
+
     }
 
     /**
@@ -123,25 +128,25 @@ public class ChatConnection implements ConnectionListener
     private void sendMessage(String body, String mId)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : sendMessage()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage()");
         EntityBareJid id = null;
 
         if(mConnection != null)
         {
 
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : sendMessage() : mConnection != null");
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage() : mConnection != null");
             ChatManager chatManager = ChatManager.getInstanceFor(mConnection);
 
             try
             {
-
                 id = JidCreate.entityBareFrom(mId);
             }
             catch (XmppStringprepException e)
             {
 
                 e.printStackTrace();
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : sendMessage() : catch(XmppString) = " + e.toString());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage() : catch(XmppString) = " + e.toString());
+
             }
 
             Chat chat = chatManager.chatWith(id);
@@ -152,25 +157,29 @@ public class ChatConnection implements ConnectionListener
                 Message message = new Message(id, Message.Type.chat);
                 message.setBody(body);
                 chat.send(message);
+
             }
             catch (SmackException.NotConnectedException e)
             {
 
                 e.printStackTrace();
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : sendMessage() : catch(Smack.NotConnect) = " + e.toString());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage() : catch(Smack.NotConnect) = " + e.toString());
+
             }
             catch (InterruptedException e)
             {
 
                 e.printStackTrace();
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : sendMessage() : catch(Interrupted) = " + e.toString());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage() : catch(Interrupted) = " + e.toString());
+
             }
+
         }
         else
         {
-
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : sendMessage() : mConnection == null");
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage() : mConnection == null");
         }
+
     }
 
     /**
@@ -180,11 +189,12 @@ public class ChatConnection implements ConnectionListener
     private void showUserListActivityWhenAuthenticated()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : showUserListActivityWhenAuthenticated()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : showUserListActivityWhenAuthenticated()");
 
         Intent i = new Intent(ChatConnectionService.UI_AUTHENTICATED);
         i.setPackage(mApplicationContext.getPackageName());
         mApplicationContext.sendBroadcast(i);
+
     }
 
     /**
@@ -198,15 +208,15 @@ public class ChatConnection implements ConnectionListener
     public void connect() throws IOException, XMPPException, SmackException
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : connect()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : connect()");
 
         DomainBareJid jId = JidCreate.domainBareFrom(mServiceName);
         XMPPTCPConnectionConfiguration.Builder builder =
                 XMPPTCPConnectionConfiguration.builder()
                         .setUsernameAndPassword(mUserName, mPassWord)
-                        .setHostAddress(InetAddress.getByName("192.168.0.6"))
+                        .setHostAddress(InetAddress.getByName("youraddress"))
                         .setXmppDomain(jId)
-                        .setPort(5222)
+                        .setPort(yourport)
                         .setResource("Chat")
                         .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 
@@ -220,12 +230,14 @@ public class ChatConnection implements ConnectionListener
 
             mConnection.connect();
             mConnection.login(mUserName, mPassWord);
+
         }
         catch (InterruptedException e)
         {
 
             e.printStackTrace();
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : connect() : catch = " + e.toString());
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : connect() : catch = " + e.toString());
+
         }
 
         ChatManager.getInstanceFor(mConnection).addIncomingListener(new IncomingChatMessageListener()
@@ -240,9 +252,9 @@ public class ChatConnection implements ConnectionListener
             public void newIncomingMessage(EntityBareJid messageFrom, Message message, Chat chat)
             {
 
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : newIncomingMessage()");
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : message.getbody() = " + message.getBody());
-                Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : message.getfrom() = " + message.getFrom());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : newIncomingMessage()");
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : message.getbody() = " + message.getBody());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : message.getfrom() = " + message.getFrom());
 
                 String from = message.getFrom().toString();
                 String contactJid = "";
@@ -250,12 +262,10 @@ public class ChatConnection implements ConnectionListener
                 // getFrom()끝에 /가 붙는 경우가 잇음
                 if(from.contains("/"))
                 {
-
                     contactJid = from.split("/")[0];
                 }
                 else
                 {
-
                     contactJid = from;
                 }
 
@@ -265,11 +275,13 @@ public class ChatConnection implements ConnectionListener
                 intent.putExtra(ChatConnectionService.BUNDLE_MESSAGE_BODY, message.getBody());
                 mApplicationContext.sendBroadcast(intent);
             }
+
         });
 
         ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(mConnection);
         reconnectionManager.setEnabledPerDefault(true);
         reconnectionManager.enableAutomaticReconnection();
+
     }
 
     /**
@@ -279,18 +291,21 @@ public class ChatConnection implements ConnectionListener
     public void disconnect()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : disconnect()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : disconnect()");
 
         if (mConnection != null)
         {
 
-            Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : disconnect() : if(mConnection != null)");
+            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : disconnect() : if(mConnection != null)");
             mConnection.disconnect();
+
         }
-        else {
+        else
+        {
             ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED;
         }
         mConnection = null;
+
     }
 
     /**
@@ -301,8 +316,9 @@ public class ChatConnection implements ConnectionListener
     public void connected(XMPPConnection connection)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : connected()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : connected()");
         ChatConnectionService.sConnectionState = ConnectionState.CONNECTED;
+
     }
 
     /**
@@ -314,9 +330,10 @@ public class ChatConnection implements ConnectionListener
     public void authenticated(XMPPConnection connection, boolean resumed)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : authenticated()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : authenticated()");
         ChatConnectionService.sConnectionState = ConnectionState.CONNECTED;
         showUserListActivityWhenAuthenticated();
+
     }
 
     /**
@@ -326,8 +343,9 @@ public class ChatConnection implements ConnectionListener
     public void connectionClosed()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : connectionClosed()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : connectionClosed()");
         ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED;
+
     }
 
     /**
@@ -338,8 +356,9 @@ public class ChatConnection implements ConnectionListener
     public void connectionClosedOnError(Exception e)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : connectionClosedOnError()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : connectionClosedOnError()");
         ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED;
+
     }
 
     /**
@@ -349,8 +368,9 @@ public class ChatConnection implements ConnectionListener
     public void reconnectionSuccessful()
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : reconnectionSuccessful()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : reconnectionSuccessful()");
         ChatConnectionService.sConnectionState = ConnectionState.CONNECTED;
+
     }
 
     /**
@@ -361,8 +381,9 @@ public class ChatConnection implements ConnectionListener
     public void reconnectingIn(int seconds)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : reconnectingIn()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : reconnectingIn()");
         ChatConnectionService.sConnectionState = ConnectionState.CONNECTING;
+
     }
 
     /**
@@ -373,7 +394,9 @@ public class ChatConnection implements ConnectionListener
     public void reconnectionFailed(Exception e)
     {
 
-        Log.d(App_Debug.APP_DEBUG, this.getClass().getName() + " : reconnectionFailed()");
+        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : reconnectionFailed()");
         ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED;
+
     }
+
 }

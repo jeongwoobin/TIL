@@ -16,7 +16,6 @@ public class UserList
      */
     public UserList(String contactJid)
     {
-
         jid = contactJid;
     }
 
@@ -26,7 +25,6 @@ public class UserList
      */
     public String getJid()
     {
-
         return jid;
     }
 
@@ -36,7 +34,7 @@ public class UserList
      */
     public void setJid(String jid)
     {
-
         this.jid = jid;
     }
+
 }
