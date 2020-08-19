@@ -1,9 +1,4 @@
-/**
- * UserListRvAdapter.class
- * 기능 : RecyclerView 와 데이터 바인딩
- */
-
-package com.geurimsoft.gmessenger.view.userList;
+package com.geurimsoft.gmessenger.view.chatList;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +18,7 @@ import com.geurimsoft.gmessenger.view.chat.ChatActivity;
 
 import java.util.ArrayList;
 
-public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.ItemViewHolder>
+public class ChatListRvAdapter extends RecyclerView.Adapter<ChatListRvAdapter.ItemViewHolder>
 {
 
     private ArrayList<UserList> mUserList;
@@ -34,7 +29,7 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
      * @param context 인텐트에 사용
      * @param data RecyclerView 에 userListItem 으로 UserList 데이터 넣기위해 사용
      */
-    public UserListRvAdapter(Context context, ArrayList<UserList> data)
+    public ChatListRvAdapter(Context context, ArrayList<UserList> data)
     {
 
         mUserList = data;
@@ -50,11 +45,11 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
      */
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
+    public ChatListRvAdapter.ItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType)
     {
 
-        View holderView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.userlistitem, viewGroup, false);
-        return new ItemViewHolder(holderView);
+        View holderView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.chatlistitem, viewGroup, false);
+        return new ChatListRvAdapter.ItemViewHolder(holderView);
 
     }
 
@@ -66,13 +61,13 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
      * @param position 클릭한 위젯 position 값으로 userListItem 의 위젯 데이터 받아옴
      */
     @Override
-    public void onBindViewHolder(@NonNull final ItemViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull final ChatListRvAdapter.ItemViewHolder holder, int position)
     {
 
         UserList item = mUserList.get(position);
-        holder.tv_UserListItem.setText(item.getJid());
+        holder.tv_ChatListItem.setText(item.getJid());
 
-        holder.tv_UserListItem.setOnClickListener(new View.OnClickListener()
+        holder.tv_ChatListItem.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
@@ -80,9 +75,9 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
             {
 
                 Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("ID", holder.tv_UserListItem.getText().toString());
+                intent.putExtra("ID", holder.tv_ChatListItem.getText().toString());
                 Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : context = " + context);
-                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : holder.tv_UserListItem.getText().toString() = " + holder.tv_UserListItem.getText().toString());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : holder.tv_UserListItem.getText().toString() = " + holder.tv_ChatListItem.getText().toString());
 
                 context.startActivity(intent);
             }
@@ -107,7 +102,7 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
     public static class ItemViewHolder extends RecyclerView.ViewHolder
     {
 
-        TextView tv_UserListItem;
+        TextView tv_ChatListItem;
 
         /**
          * ItemViewHolder 생성자
@@ -118,7 +113,7 @@ public class UserListRvAdapter extends RecyclerView.Adapter<UserListRvAdapter.It
         {
 
             super(view);
-            tv_UserListItem = itemView.findViewById(R.id.tv_UserListItem);
+            tv_ChatListItem = itemView.findViewById(R.id.tv_ChatListItem);
 
         }
 

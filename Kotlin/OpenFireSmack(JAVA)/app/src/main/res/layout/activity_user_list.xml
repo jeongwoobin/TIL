@@ -7,14 +7,36 @@
     tools:context=".view.userList.UserListActivity"
     android:padding="5pt">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_UserList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item"
+    <Button
+        android:id="@+id/btn_Ul"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="UserList"
 
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/vp_UserList"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_Cl"
+        />
+
+    <Button
+        android:id="@+id/btn_Cl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="ChatList"
+
+        app:layout_constraintTop_toTopOf="@id/btn_Ul"
+        app:layout_constraintStart_toEndOf="@id/btn_Ul"
         app:layout_constraintEnd_toEndOf="parent"
         />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vp_UserList"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+
+
+            app:layout_constraintTop_toBottomOf="@id/btn_Ul"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

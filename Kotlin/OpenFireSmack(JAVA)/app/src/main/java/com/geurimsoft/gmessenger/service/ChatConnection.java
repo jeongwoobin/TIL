@@ -27,21 +27,35 @@ import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatException;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.jid.util.JidUtil;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Set;
+
+import static com.geurimsoft.gmessenger.data.AppConfig.CHAT_ADDR;
+import static com.geurimsoft.gmessenger.data.AppConfig.CHAT_PORT;
 
 public class ChatConnection implements ConnectionListener
 {
+    private EntityBareJid mucJid;
+    private Resourcepart nickname;
+    private FullJid otherJid;
 
-    private  final Context mApplicationContext;
-    private  final String mUserName;
-    private  final String mPassWord;
-    private  final String mServiceName;
+    private final Context mApplicationContext;
+    private final String mUserName;
+    private final String mPassWord;
+    private final String mServiceName;
     private XMPPTCPConnection mConnection;
     private BroadcastReceiver uiTHreadMessageReceiver;
 
@@ -214,10 +228,10 @@ public class ChatConnection implements ConnectionListener
         XMPPTCPConnectionConfiguration.Builder builder =
                 XMPPTCPConnectionConfiguration.builder()
                         .setUsernameAndPassword(mUserName, mPassWord)
-                        .setHostAddress(InetAddress.getByName("youraddress"))
+                        .setHostAddress(InetAddress.getByName(CHAT_ADDR))
                         .setXmppDomain(jId)
-                        .setPort(yourport)
-                        .setResource("Chat")
+                        .setPort(CHAT_PORT)
+                        .setResource("Mobile")
                         .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 
         setupUiThreadBroadCastMessageReceiver();
@@ -259,7 +273,7 @@ public class ChatConnection implements ConnectionListener
                 String from = message.getFrom().toString();
                 String contactJid = "";
 
-                // getFrom()끝에 /가 붙는 경우가 잇음
+                // getFrom()끝에 '/setResource' 가 붙음
                 if(from.contains("/"))
                 {
                     contactJid = from.split("/")[0];
@@ -397,6 +411,35 @@ public class ChatConnection implements ConnectionListener
         Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : reconnectionFailed()");
         ChatConnectionService.sConnectionState = ConnectionState.DISCONNECTED;
 
+    }
+
+    // 그룹 채팅방 만들기
+    public void createMultiChat()
+    {
+        try {
+
+            mucJid = JidCreate.entityBareFrom("ChatRoom@" + CHAT_ADDR);
+            nickname = Resourcepart.from("testbot");
+
+            MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(mConnection);
+            MultiUserChat muc = mucManager.getMultiUserChat(mucJid);
+            Set<Jid> owners = JidUtil.jidSetFrom(new String [] { "user1@" + CHAT_ADDR, "user2@" + CHAT_ADDR, "user3@" + CHAT_ADDR});
+            muc.create(nickname)
+                    .getConfigFormManager()
+                    .setRoomOwners(owners)
+                    .submitConfigurationForm();
+
+        } catch (XmppStringprepException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException | MultiUserChatException.MucAlreadyJoinedException | SmackException.NotConnectedException | MultiUserChatException.MissingMucCreationAcknowledgeException | MultiUserChatException.NotAMucServiceException | MultiUserChatException.MucConfigurationNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // 그룹 채팅방 참여
+    public void enterChat() throws XMPPException.XMPPErrorException, MultiUserChatException.NotAMucServiceException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(mConnection);
+        MultiUserChat muc2 = manager.getMultiUserChat(mucJid);
+        muc2.join(nickname);
     }
 
 }

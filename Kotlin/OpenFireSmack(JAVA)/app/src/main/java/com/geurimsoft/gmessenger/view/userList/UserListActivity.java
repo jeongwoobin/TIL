@@ -8,10 +8,13 @@ package com.geurimsoft.gmessenger.view.userList;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.geurimsoft.gmessenger.R;
 import com.geurimsoft.gmessenger.data.AppConfig;
@@ -20,11 +23,13 @@ import com.geurimsoft.gmessenger.service.ChatConnectionService;
 
 import java.util.ArrayList;
 
+import static com.geurimsoft.gmessenger.data.AppConfig.CHAT_ADDR;
+
 public class UserListActivity extends AppCompatActivity
 {
 
-    private ArrayList<UserList> item = new ArrayList<>();
-    private RecyclerView rv_UserList;
+    private ViewPager vp_UserList;
+    private Button btn_Ul, btn_Cl;
 
     /**
      * 레이아웃 위젯 연결
@@ -37,8 +42,9 @@ public class UserListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onCreate()");
         setContentView(R.layout.activity_user_list);
-
-        rv_UserList = findViewById(R.id.rv_UserList);
+        vp_UserList = findViewById(R.id.vp_UserList);
+        btn_Cl = findViewById(R.id.btn_Cl);
+        btn_Ul = findViewById(R.id.btn_Ul);
 
     }
 
@@ -52,11 +58,8 @@ public class UserListActivity extends AppCompatActivity
 
         super.onResume();
         Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onResume()");
-
-        setData();
-
-        rv_UserList.setLayoutManager(new LinearLayoutManager(this));
-        rv_UserList.setAdapter(new UserListRvAdapter(this, item));
+        setButton();
+        setViewPager();
 
     }
 
@@ -79,21 +82,59 @@ public class UserListActivity extends AppCompatActivity
 
     }
 
-    /**
-     * UserList 에 유저데이터 저장
-     */
-    private void setData()
-    {
 
-        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : setData()");
 
-        for(int i = 1; i <6; i++)
-        {
+    // UI
+    private void setViewPager() {
+        ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            UserList ul = new UserList("user" + i + "@localhost");
-            item.add(ul);
-        }
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        onUserListClicked();
+                        break;
+                    case 1:
+                        onChatListClicked();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+
+        vp_UserList.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        vp_UserList.removeOnPageChangeListener(listener);
+        vp_UserList.addOnPageChangeListener(listener);
+    }
+
+    private void setButton() {
+        btn_Ul.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vp_UserList.setCurrentItem(0);
+            }
+        });
+
+        btn_Cl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vp_UserList.setCurrentItem(1);
+            }
+        });
+    }
+
+    private void onUserListClicked() {
+        // UI 작업
+    }
+    private void onChatListClicked() {
+        // UI 작업
     }
 
 }

@@ -47,6 +47,7 @@ public class ChatActivity extends AppCompatActivity
 
         chat_view = findViewById(R.id.chat_view);
 
+
     }
 
     /**
@@ -97,6 +98,8 @@ public class ChatActivity extends AppCompatActivity
                 if(ChatConnectionService.getState() == ChatConnection.ConnectionState.CONNECTED)
                 {
 
+                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage() : Message send!");
+
                     Intent i1 = new Intent(ChatConnectionService.SEND_MESSAGE);
                     i1.putExtra(ChatConnectionService.BUNDLE_MESSAGE_BODY, chat_view.getTypedMessage());
                     i1.putExtra(ChatConnectionService.BUNDLE_TO, contactJid);
@@ -107,7 +110,10 @@ public class ChatActivity extends AppCompatActivity
                 }
                 else
                 {
+
+                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : sendMessage() : Client not connected to server ,Message not sent!");
                     Toast.makeText(getApplicationContext(), "Client not connected to server ,Message not sent!", Toast.LENGTH_LONG).show();
+
                 }
                 return true;
 
