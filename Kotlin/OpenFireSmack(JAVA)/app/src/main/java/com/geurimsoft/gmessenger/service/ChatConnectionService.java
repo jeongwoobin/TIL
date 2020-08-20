@@ -23,6 +23,7 @@ public class ChatConnectionService extends Service
     public static final String UI_AUTHENTICATED = "com.geurimsoft.gmessenger.uiauthenticated";
     public static final String SEND_MESSAGE = "com.geurimsoft.gmessenger.sendmessage";
     public static final String NEW_MESSAGE = "com.geurimsoft.gmessenger.newmessage";
+    public static final String GROUP_NEW_MESSAGE = "com.geurimsoft.gmessenger.groupnewmessage";
     public static final String BUNDLE_MESSAGE_BODY = "b_body";
     public static final String BUNDLE_TO = "b_to";
     public static final String BUNDLE_FROM = "b_from";

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.geurimsoft.gmessenger.R;
 import com.geurimsoft.gmessenger.data.AppConfig;
 import com.geurimsoft.gmessenger.data.UserList;
+import com.geurimsoft.gmessenger.service.ChatConnection;
 import com.geurimsoft.gmessenger.view.chat.ChatActivity;
 
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class ChatListRvAdapter extends RecyclerView.Adapter<ChatListRvAdapter.It
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra("ID", holder.tv_ChatListItem.getText().toString());
                 Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : context = " + context);
-                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : holder.tv_UserListItem.getText().toString() = " + holder.tv_ChatListItem.getText().toString());
+                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : onBindViewHolder : holder.tv_ChatListItem.getText().toString() = " + holder.tv_ChatListItem.getText().toString());
 
                 context.startActivity(intent);
             }

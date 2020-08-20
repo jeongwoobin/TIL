@@ -100,6 +100,7 @@ public class UserListActivity extends AppCompatActivity
                         break;
                     case 1:
                         onChatListClicked();
+                        break;
                 }
             }
 

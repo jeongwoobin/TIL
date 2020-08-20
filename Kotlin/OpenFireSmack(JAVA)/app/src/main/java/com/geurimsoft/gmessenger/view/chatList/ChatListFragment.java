@@ -64,8 +64,9 @@ public class ChatListFragment extends Fragment {
         for(int i = 1; i <6; i++)
         {
 
-            UserList ul = new UserList("chat" + i + "@" + CHAT_ADDR);
+            UserList ul = new UserList("chat" + i + "@conference." + CHAT_ADDR);
             item.add(ul);
+
         }
 
     }
