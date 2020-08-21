@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.geurimsoft.gmessenger">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.userList.UserListActivity"></activity>
+        <activity android:name=".view.chat.GroupChatActivity"></activity>
+        <activity android:name=".view.userList.UserListActivity" />
         <activity android:name=".view.chat.ChatActivity" />
         <activity android:name=".view.SignUpActivity" />
         <activity android:name=".view.MainActivity">
@@ -22,8 +23,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.ChatConnectionService">
-        </service>
+        <service android:name=".service.ChatConnectionService"></service>
     </application>
 
 </manifest>

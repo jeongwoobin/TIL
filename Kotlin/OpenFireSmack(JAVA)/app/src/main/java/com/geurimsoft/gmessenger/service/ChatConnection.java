@@ -1,7 +1,7 @@
 /**
  * ChatConnection.class
  * 기능 : 서버 연결, 해제 및 상태관리
- *        ChatActivity 에서 Broadcast 한 메시지 수신하여 백그라운드 스레드로 메시지 전달(서버로 송신)
+ *        (Group)ChatActivity 에서 Broadcast 한 메시지 수신하여 백그라운드 스레드로 메시지 전달(서버로 송신)
  */
 
 package com.geurimsoft.gmessenger.service;
@@ -29,23 +29,19 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.muc.InvitationListener;
-import org.jivesoftware.smackx.muc.InvitationRejectionListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.muc.MultiUserChatException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityJid;
-import org.jxmpp.jid.FullJid;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.jxmpp.jid.util.JidUtil;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Iterator;
 import java.util.Set;
 
 import static com.geurimsoft.gmessenger.data.AppConfig.CHAT_ADDR;
@@ -53,17 +49,16 @@ import static com.geurimsoft.gmessenger.data.AppConfig.CHAT_PORT;
 
 public class ChatConnection implements ConnectionListener
 {
+
     private EntityBareJid mucName;
-    private Resourcepart nickname;
-    private FullJid otherJid;
-    private MultiUserChat muc;
+    private String mId;
+    private XMPPTCPConnection mConnection;
+    private BroadcastReceiver uiThreadMessageReceiver;
 
     private final Context mApplicationContext;
     private final String mUserName;
     private final String mPassWord;
     private final String mServiceName;
-    private XMPPTCPConnection mConnection;
-    private BroadcastReceiver uiTHreadMessageReceiver;
 
     public enum ConnectionState
     {
@@ -85,8 +80,7 @@ public class ChatConnection implements ConnectionListener
 
         Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : ChatConnection()");
         mApplicationContext = context.getApplicationContext();
-
-        String mId = PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getString("xmpp_mId", null);
+        mId = PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getString("xmpp_mId", null);
         mPassWord = PreferenceManager.getDefaultSharedPreferences(mApplicationContext).getString("xmpp_mPw", null);
 
         if(mId != null)
@@ -116,7 +110,7 @@ public class ChatConnection implements ConnectionListener
     {
 
         Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : setupUiThreadBroadCastMessageReceiver()");
-        uiTHreadMessageReceiver = new BroadcastReceiver()
+        uiThreadMessageReceiver = new BroadcastReceiver()
         {
 
             @Override
@@ -135,7 +129,7 @@ public class ChatConnection implements ConnectionListener
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ChatConnectionService.SEND_MESSAGE);
-        mApplicationContext.registerReceiver(uiTHreadMessageReceiver, filter);
+        mApplicationContext.registerReceiver(uiThreadMessageReceiver, filter);
 
     }
 
@@ -262,6 +256,7 @@ public class ChatConnection implements ConnectionListener
 
         ChatManager.getInstanceFor(mConnection).addIncomingListener(new IncomingChatMessageListener()
         {
+
             /**
              * 새로 들어온 메시지가 있을 때 ChatConnectionService.NEW_MESSAGE 객체 생성하여 메시지데이터 저장 후 Broadcast
              * @param messageFrom 메시지 송신인 ID
@@ -298,13 +293,25 @@ public class ChatConnection implements ConnectionListener
 
         });
 
-        // muc 초대받았을 때 Listener
-        // invitationReceived() 로그는 뜸!!!!!  -> 로그보면 각각 user 수신자 다르게 나옴
-        // 초대받으면 room에 바로 들어가짐
-        MultiUserChatManager.getInstanceFor(mConnection).addInvitationListener(new InvitationListener() {
-            Set<EntityBareJid> a;
+        MultiUserChatManager.getInstanceFor(mConnection).addInvitationListener(new InvitationListener()
+        {
+
+            /**
+             * 그룹채팅 초대 listener
+             * 그룹채팅방 정보들이 들어있음
+             * 이 정보들로 해당 그룹채팅에 join
+             * @param conn 현재 사용중인 계정정보
+             * @param room 초대받은 그룹채팅방 정보(그룹채팅방 이름, 초대받은계정)
+             * @param inviter 그룹채팅 생성자
+             * @param reason 그룹채팅 초대 메시지
+             * @param password 비밀번호
+             * @param message 그룹채팅 초대 받은계정, 그룹채팅방 이름
+             * @param invitation smack 코드
+             */
             @Override
-            public void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason, String password, Message message, MUCUser.Invite invitation) {
+            public void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason, String password, Message message, MUCUser.Invite invitation)
+            {
+
                 Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived()");
                 Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() conn : " + conn);
                 Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() room : " + room);
@@ -314,34 +321,92 @@ public class ChatConnection implements ConnectionListener
                 Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() message : " + message);
                 Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() invitation : " + invitation);
 
-                a = MultiUserChatManager.getInstanceFor(mConnection).getJoinedRooms();
-                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() a : " + a);
+                try
+                {
 
-                try {
-                    room.join(Resourcepart.from(mUserName));
+                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() try");
+
+                    if(!room.isJoined())
+                    {
+
+                        room.join(Resourcepart.from(mId));
+                        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() : room.isJoined() : " + room.isJoined());
+
+                    }
+
+
+                    Set<EntityBareJid> a = MultiUserChatManager.getInstanceFor(mConnection).getJoinedRooms();
+                    Iterator<EntityBareJid> ia = a.iterator();
+                    mucName = ia.next();
+                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() mucName : " + mucName);
+
+
+                    MultiUserChatManager.getInstanceFor(mConnection).getMultiUserChat(mucName).addMessageListener(new MessageListener()
+                    {
+
+                        /**
+                         * 메시지 수신 listener
+                         * 그룹채팅 메시지이므로 그룹채팅방 이름과 메시지송신자 분리하여 GROUP_NEW_MESSAGE 객체 생성 후 데이터저장, Broadcast
+                         * @param message 수신 메시지 정보
+                         */
+                        @Override
+                        public void processMessage(Message message)
+                        {
+
+                            Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : MessageListener() : processMessage() mucName : " + mucName);
+
+                            if(message.getBody() != null)
+                            {
+
+                                if(message.getBody().length() > 0)
+                                {
+
+                                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : MessageListener() : processMessage() message.getBody() : " + message.getBody());
+                                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : MessageListener() : processMessage() message.getFrom() : " + message.getFrom());
+
+                                    String from = message.getFrom().toString();
+                                    String groupName = "";
+                                    String contactJid = "";
+
+                                    // getFrom()에 방이름과 초대보낸사람이 /로 구분
+                                    groupName = from.split("/")[0];
+                                    contactJid = from.split("/")[1];
+
+                                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : MessageListener() : processMessage() groupName : " + groupName);
+                                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : MessageListener() : processMessage() contactJid : " + contactJid);
+
+                                    Intent intent = new Intent(ChatConnectionService.GROUP_NEW_MESSAGE);
+                                    intent.setPackage(mApplicationContext.getPackageName());
+                                    intent.putExtra(ChatConnectionService.BUNDLE_GROUP_FROM, groupName);
+                                    intent.putExtra(ChatConnectionService.BUNDLE_FROM, contactJid);
+                                    intent.putExtra(ChatConnectionService.BUNDLE_MESSAGE_BODY, message.getBody());
+                                    mApplicationContext.sendBroadcast(intent);
+
+                                }
+
+                            }
+                            else
+                            {
+                                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : MessageListener() : processMessage() message fail");
+                            }
+
+                        }
+
+                    });
+
                 }
-                /*
-                SmackException.NoResponseException | XMPPException.XMPPErrorException | SmackException.NotConnectedException
-                        | InterruptedException | MultiUserChatException.NotAMucServiceException | XmppStringprepException e
-                 */
-                catch (Exception e) {
+
+                catch (Exception e)
+                {
+
                     e.printStackTrace();
-                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived FAIL");
+                    Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() catch");
+
                 }
-                a = MultiUserChatManager.getInstanceFor(mConnection).getJoinedRooms();
-                Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : invitationReceived() a : " + a);
+
             }
+
         });
-
-
-        // 수신 메시지 받기!!!
-        MultiUserChatManager.getInstanceFor(mConnection).getMultiUserChat((EntityBareJid)mUserName).addMessageListener(new MessageListener() {
-            @Override
-            public void processMessage(Message message) {
-
-            }
-        })
-
 
         ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(mConnection);
         reconnectionManager.setEnabledPerDefault(true);
@@ -476,69 +541,56 @@ public class ChatConnection implements ConnectionListener
 
 
 
+
+
     /**
      * 그룹 채팅 구현
      */
 
 
-    // 그룹 채팅방 만들기
-    public void createGroupChat() throws XmppStringprepException, InterruptedException, SmackException.NoResponseException, MultiUserChatException.MucAlreadyJoinedException,
-            SmackException.NotConnectedException, XMPPException.XMPPErrorException, MultiUserChatException.MissingMucCreationAcknowledgeException,
-            MultiUserChatException.NotAMucServiceException, MultiUserChatException.MucConfigurationNotSupportedException {
-        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : createGroupChat()");
-
-            mucName = JidCreate.entityBareFrom("chat1@conference." + CHAT_ADDR);
-            nickname = Resourcepart.from("Mobile");
-
-            MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(mConnection);
-            muc = mucManager.getMultiUserChat(mucName);
-
-            Set<Jid> owners = JidUtil.jidSetFrom(new String [] { "user1@" + CHAT_ADDR, "user2@" + CHAT_ADDR, "user3@" + CHAT_ADDR});
-
-            otherJid = JidCreate.fullFrom("user3@" + CHAT_ADDR + "/Mobile");
-
-            muc.create(nickname)
-                    .getConfigFormManager()
-                    .setRoomOwners(owners)
-                    .submitConfigurationForm();
-
-            MultiUserChatManager.getInstanceFor(mConnection).addInvitationListener(new InvitationListener() {
-                @Override
-                public void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason, String password, Message message, MUCUser.Invite invitation) {
-                    try {
-                        muc.invite((EntityBareJid) otherJid, "hi");
-                    } catch (SmackException.NotConnectedException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-    }
-
-
+//    // 그룹 채팅방 만들기
+//    public void createGroupChat() throws XmppStringprepException, InterruptedException, SmackException.NoResponseException, MultiUserChatException.MucAlreadyJoinedException,
+//            SmackException.NotConnectedException, XMPPException.XMPPErrorException, MultiUserChatException.MissingMucCreationAcknowledgeException,
+//            MultiUserChatException.NotAMucServiceException, MultiUserChatException.MucConfigurationNotSupportedException {
+//        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : createGroupChat()");
+//
+//            mucName = JidCreate.entityBareFrom("chat1@conference." + CHAT_ADDR);
+//            nickname = Resourcepart.from("Mobile");
+//
+//            MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(mConnection);
+//            muc = mucManager.getMultiUserChat(mucName);
+//
+//            Set<Jid> owners = JidUtil.jidSetFrom(new String [] { "user1@" + CHAT_ADDR, "user2@" + CHAT_ADDR, "user3@" + CHAT_ADDR});
+//
+//            otherJid = JidCreate.fullFrom("user3@" + CHAT_ADDR + "/Mobile");
+//
+//            muc.create(nickname)
+//                    .getConfigFormManager()
+//                    .setRoomOwners(owners)
+//                    .submitConfigurationForm();
+//
+//            MultiUserChatManager.getInstanceFor(mConnection).addInvitationListener(new InvitationListener() {
+//                @Override
+//                public void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason, String password, Message message, MUCUser.Invite invitation) {
+//                    try {
+//                        muc.invite((EntityBareJid) otherJid, "hi");
+//                    } catch (SmackException.NotConnectedException | InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 그룹 채팅방 참여
-    public void joinChat(Resourcepart nickname) throws XMPPException.XMPPErrorException, MultiUserChatException.NotAMucServiceException, SmackException.NotConnectedException,
-            InterruptedException, SmackException.NoResponseException {
-        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : joinChat()");
-
-        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(mConnection);
-        MultiUserChat muc2 = manager.getMultiUserChat(mucName);
-        muc2.join(nickname);
-    }
+//    // 그룹 채팅방 참여
+//    public void joinChat(Resourcepart nickname) throws XMPPException.XMPPErrorException, MultiUserChatException.NotAMucServiceException, SmackException.NotConnectedException,
+//            InterruptedException, SmackException.NoResponseException {
+//        Log.d(AppConfig.APP_DEBUG, this.getClass().getName() + " : joinChat()");
+//
+//        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(mConnection);
+//        MultiUserChat muc2 = manager.getMultiUserChat(mucName);
+//        muc2.join(nickname);
+//    }
 
 //    // 초대하기
 //    public void invitation() throws XMPPException.XMPPErrorException, MultiUserChatException.NotAMucServiceException, SmackException.NotConnectedException,
@@ -558,22 +610,22 @@ public class ChatConnection implements ConnectionListener
 //        muc2.invite((EntityBareJid) otherJid, "Meet me in this excellent room");
 //    }
 
-    // 거절하기
-    public void decline() {
-        MultiUserChatManager.getInstanceFor(mConnection).addInvitationListener(new InvitationListener() {
-            @Override
-            public void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason, String password, Message message, MUCUser.Invite invitation) {
-                try {
-                    MultiUserChatManager.getInstanceFor(conn).decline(mucName, (EntityBareJid) inviter, "I'm busy right now");
-                } catch (SmackException.NotConnectedException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-    }
+//    // 거절하기
+//    public void decline() {
+//        MultiUserChatManager.getInstanceFor(mConnection).addInvitationListener(new InvitationListener() {
+//            @Override
+//            public void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason, String password, Message message, MUCUser.Invite invitation) {
+//                try {
+//                    MultiUserChatManager.getInstanceFor(conn).decline(mucName, (EntityBareJid) inviter, "I'm busy right now");
+//                } catch (SmackException.NotConnectedException e) {
+//                    e.printStackTrace();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        });
+//    }
 
 }
 

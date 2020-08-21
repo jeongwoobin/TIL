@@ -9,7 +9,7 @@ public class AppConfig
 {
 
     public static final String APP_DEBUG = "Geurimsoft";
-    public static final String CHAT_ADDR = "";
-    public static final int CHAT_PORT = ;
+    public static final String CHAT_ADDR = "yourAddr";
+    public static final int CHAT_PORT = yourPort;
 
 }

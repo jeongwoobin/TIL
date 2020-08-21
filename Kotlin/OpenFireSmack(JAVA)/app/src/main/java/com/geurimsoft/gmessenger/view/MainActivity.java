@@ -1,12 +1,13 @@
 /**
  * gMessenger
  * 작성자 : 정우빈
- * 20200812 (최초생성) Kotlin 완료
+ * 20200812 (최초생성) Kotlin 완료(1:1 채팅 메시지 송수신 구현 완료)
  * 20200813 (수정) Kotlin to Java 완료
  * 20200814 (추가) 주석추가 완료
  * 20200818 (수정) 주석수정 완료
- * 20200819 (수정) UserList, ChatList 를 Fragment로 변경
+ * 20200819 (수정) UserList, ChatList 를 Fragment 로 변경 후 ViewPaging 완료
  * 20200820 (추가) GroupChat 추가중
+ * 20200821 (추가) GroupChat PC 에서 송신한 메시지 Mobile 에서 수신 가능
  *
  * 기능 : 메신저기능(텍스트 송,수신 가능)
  *
@@ -22,6 +23,7 @@
 //  6) 채팅 삭제 기능
 //  7) 이미지 송수신 기능
 //  8) 그룹채팅 기능
+//  9) pc와 동시 로그인되어있을 시 모바일에서 채팅 안나옴
 
 /**
  * MainActivity.class
